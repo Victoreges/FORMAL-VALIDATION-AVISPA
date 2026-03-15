@@ -67,4 +67,7 @@ Download and install AVISPA from [http://www.avispa-project.org/](http://www.avi
 ```bash
 hlpsl2if protocol.hlpsl -o results/protocol.if
 
+### 3. Run the Analysis
+```bash
 avispa results/protocol.if
+
