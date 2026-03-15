@@ -63,9 +63,9 @@ AVISPA will check that no intruder can learn these secrets during protocol execu
 ### 1. Install AVISPA
 Download and install AVISPA from [http://www.avispa-project.org/](http://www.avispa-project.org/).
 
-### 2. Convert HLPSL to IF format
-```bash
+### 2. Convert HLPSL to IF
 hlpsl2if protocol.hlpsl -o results/protocol.if
 
+### 3. Run the Analysis
 avispa results/protocol.if
 
