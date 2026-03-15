@@ -1,0 +1,163 @@
+					
+role role_EV(EV,CS,TA:agent,H2,H3,H4:hash_func,Rev,TIDev,TsEv:text,
+             PKev:public_key,Sigev,Sigcs:symmetric_key,SND,RCV:channel(dy))
+played_by EV
+def=
+	local
+		State:nat,
+		TsCs,IDta,Rta,ATIDevcs,Ac:text,
+		PKta:public_key
+	init
+		State := 0
+	transition
+		1. State=0 /\ RCV(start) =|> State':=1 
+		
+		/\ SND({H2(PKev.Rev.TIDev).
+		Rev.H3(H2(PKev.Rev.TIDev).Rev)}_Sigev.TsEv)
+		/\ secret(PKev,sec_1,{EV,CS}) 
+		/\ secret(Rev,sec_2,{EV,CS}) 
+		/\ secret(TIDev,sec_3,{EV,CS}) 
+		/\ secret(Sigev,sec_4,{EV,CS})
+
+		2. State=1 /\ RCV({IDta'.PKta'.
+		Rta'.ATIDevcs'.Ac'}_Sigev.TsCs') =|> State':=2 
+		/\ SND({H4(IDta.PKta.Rta.ATIDevcs)}_Sigev.TsEv) 
+		/\ secret(IDta,sec_26,{CS,EV}) /\ secret(PKta,sec_27,{CS,EV}) 
+		/\ secret(Rta,sec_28,{CS,EV}) /\ secret(ATIDevcs,sec_29,{CS,EV})
+		/\ secret(Sigev,sec_30,{CS,EV})	 
+end role
+
+role role_CS(CS,EV,TA:agent,H2,H3,H4:hash_func,Rcs,TIDcs,TsCs:text,
+	         PKcs:public_key,Sigev,Sigcs:symmetric_key,SND,RCV:channel(dy))
+played_by CS
+def=
+	local
+		State:nat,
+		TsTa,TsEv,Rev,TIDev,IDta,Rta,ATIDevcs,Ac:text,		
+		PKev,PKta:public_key
+	init
+		State := 0
+	transition
+		1. State=0 /\ RCV({H2(PKev'.Rev'.TIDev').Rev'
+		.H3(H2(PKev'.Rev'.TIDev').Rev')}_Sigev.TsEv') =|>  
+		State':=1 /\ SND({H2(PKev.Rev.TIDev)
+		.Rev.H3(H2(PKev.Rev.TIDev).Rev)}_Sigev.{H2(PKcs.Rcs.TIDcs)
+		.Rcs.H3(H2(PKcs.Rcs.TIDcs).Rcs)}_Sigcs.TsCs) 
+        	/\ secret(PKev,sec_5,{CS,TA}) /\ secret(Rev,sec_6,{CS,TA}) 
+		/\ secret(TIDev,sec_7,{CS,TA})/\ secret(Sigev,sec_8,{CS,TA})
+		/\ secret(PKcs,sec_9,{CS,TA}) /\ secret(Rcs,sec_10,{CS,TA})
+		/\ secret(TIDcs,sec_11,{CS,TA}) /\ secret(Sigcs,sec_12,{CS,TA})
+
+		2. State=1 /\ RCV({IDta'.PKta'.
+		Rta'.ATIDevcs'.Ac'.Sigev}_Sigcs.TsTa') =|> State':=2 
+		/\ SND({IDta.PKta.Rta.ATIDevcs.Ac}_Sigev.TsCs) 
+		/\ secret(IDta,sec_20,{CS,EV})/\ secret(PKta,sec_21,{CS,EV}) 
+		/\ secret(Rta,sec_22,{CS,EV}) /\ secret(ATIDevcs,sec_23,{CS,EV}) 
+		/\ secret(Ac,sec_24,{CS,EV}) /\ secret(Sigev,sec_25,{CS,EV})
+
+		3. State=2 /\ RCV({H4(IDta'.PKta'.
+		Rta'.ATIDevcs')}_Sigev.TsEv') =|> State':=3 
+		/\ SND({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.
+		{H4(IDta.PKta.Rta.ATIDevcs)}_Sigcs.TsCs) 
+		/\ secret(IDta,sec_31,{CS,TA}) /\ secret(PKta,sec_32,{CS,TA})
+		/\ secret(Rta,sec_33,{CS,TA}) /\ secret(ATIDevcs,sec_34,{CS,TA})
+		/\ secret(Sigev,sec_35,{CS,TA}) /\ secret(Sigcs,sec_35,{CS,TA})
+end role
+
+role role_TA(TA,CS,EV:agent,H2,H3,H4:hash_func,ATIDevcs,Ac,IDta,Rta,TsTa:text,
+	     PKta:public_key,Sigev,Sigcs:symmetric_key,SND,RCV:channel(dy))
+played_by TA
+def=
+	local
+		State:nat,
+		TsCs,TsEv,Rev,TIDev,Rcs,TIDcs:text,
+		PKev,PKcs:public_key
+	init
+		State := 0
+	transition
+		1. State=0 /\ RCV({H2(PKev'.Rev'.TIDev').
+		Rev'.H3(H2(PKev'.Rev'.TIDev').Rev')}_Sigev.
+		{H2(PKcs'.Rcs'.TIDcs').
+		Rcs'.H3(H2(PKcs'.Rcs'.TIDcs').Rcs')}_Sigcs.TsCs') =|> 
+		State':=1 /\ SND({IDta.PKta.Rta.ATIDevcs.Ac.Sigev}_Sigcs.TsTa) 
+		/\ secret(IDta,sec_13,{TA,CS}) /\ secret(PKta,sec_14,{TA,CS}) 
+		/\secret(Rta,sec_15,{TA,CS}) /\ secret(ATIDevcs,sec_16,{TA,CS}) 
+		/\ secret(Ac,sec_17,{TA,CS}) /\ secret(Sigev,sec_18,{TA,CS})
+        	/\ secret(Sigcs,sec_19,{TA,CS})
+
+		2. State=1 /\ RCV({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.
+		{H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigcs.TsCs') =|> State':=2
+end role
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+role session(EV,CS,TA:agent,H2,H3,H4:hash_func,Rev,TIDev,TsEv,Rcs,TIDcs,TsCs,ATIDevcs,Ac,IDta,Rta,TsTa:text,
+	     PKev,PKcs,Pkta:public_key,Sigev,Sigcs:symmetric_key)
+def=
+	local
+		SND3,RCV3,SND2,RCV2,SND1,RCV1:channel(dy)
+	composition
+		role_EV(EV,CS,TA,H2,H3,H4,Rev,TIDev,TsEv,PKev,Sigev,Sigcs,SND1,RCV1) /\ 
+		role_CS(CS,EV,TA,H2,H3,H4,Rcs,TIDcs,TsCs,PKcs,Sigev,Sigcs,SND2,RCV2) /\
+		role_TA(TA,CS,EV,H2,H3,H4,ATIDevcs,Ac,IDta,Rta,TsTa,Pkta,Sigev,Sigcs,SND3,RCV3)
+end role
+
+role environment()
+def=
+	const	
+		ev,cs,ta:agent,
+		h2,h3,h4:hash_func,
+		m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11:text,
+		pkev,pkcs,pkta:public_key,               
+		sigmaev,sigmacs:symmetric_key,		
+		sec_1,sec_2,sec_3,sec_4,sec_5,sec_6,sec_7,sec_8,sec_9,sec_10,sec_11,sec_12,
+		sec_13,sec_14,sec_15,sec_16,sec_17,sec_18,sec_19,sec_20,sec_21,sec_22,sec_23,sec_24,
+		sec_25,sec_26,sec_27,sec_28,sec_29,sec_30,sec_31,sec_32,sec_33,sec_34,sec_35:protocol_id
+
+	intruder_knowledge = {}
+	composition
+		session(ev,cs,ta,h2,h3,h4,m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,pkev,pkcs,pkta,sigmaev,sigmacs)
+end role
+
+goal
+
+    secrecy_of sec_1
+    secrecy_of sec_2
+    secrecy_of sec_3
+    secrecy_of sec_4
+    secrecy_of sec_5
+    secrecy_of sec_6
+    secrecy_of sec_7
+    secrecy_of sec_8
+    secrecy_of sec_9
+    secrecy_of sec_10
+    secrecy_of sec_11
+    secrecy_of sec_12
+    secrecy_of sec_13
+    secrecy_of sec_14
+    secrecy_of sec_15
+    secrecy_of sec_16
+    secrecy_of sec_17
+    secrecy_of sec_18
+    secrecy_of sec_19
+    secrecy_of sec_20
+    secrecy_of sec_21
+    secrecy_of sec_22
+    secrecy_of sec_23
+    secrecy_of sec_24
+    secrecy_of sec_25
+    secrecy_of sec_26
+    secrecy_of sec_27
+    secrecy_of sec_28
+    secrecy_of sec_29
+    secrecy_of sec_30
+    secrecy_of sec_31
+    secrecy_of sec_32
+    secrecy_of sec_33
+    secrecy_of sec_34
+    secrecy_of sec_35
+
+end goal
+
+environment()
