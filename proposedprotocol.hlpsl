@@ -1,137 +1,129 @@
-role role_EV(EV,CS,TA:agent,H2,H3,H4:hash_func,
-             Rev,TIDev,TsEv:text,
+role role_EV(EV,TA,CS:agent,
+             H1,H2,H3,H4,DH:hash_func,
+             P,TIDev,Cev,Nev,T1,T5,T13:text,
              PKev:public_key,
-             Sigev,Sigcs:symmetric_key,
+             SigEV:symmetric_key,
              SND,RCV:channel(dy))
 played_by EV
 def=
 	local
 		State:nat,
-		TsCs,IDta,Rta,ATIDevcs,Ac:text,
+		Rev,Bevx,Ycs,ATIDevcs,Ac,IDta,Rta,T11,T15:text,
 		PKta:public_key
 	init
 		State := 0
-
 	transition
+		1. State=0 /\ RCV(start) =|> State':=2
+		/\ SND(H1(SigEV.TIDev.Cev.Nev.T1).T1)
+		/\ SND({H2(PKev.Rev.TIDev).Rev.H3(H2(PKev.Rev.TIDev).Rev.T5).DH(P,Bevx)}_SigEV.T5)
+		/\ secret(SigEV,sec_ev_ta,{EV,TA})
+		/\ witness(EV,TA,auth_ev_ta,H1(SigEV.TIDev.Cev.Nev.T1))
 
-	1. State=0 /\ RCV(start) =|>
-	   State' := 1
-	   /\ SND({H2(PKev.Rev.TIDev).Rev.H3(H2(PKev.Rev.TIDev).Rev)}_Sigev.TsEv)
-	   /\ secret(Rev,sec_rev,{EV,CS})
-	   /\ secret(TIDev,sec_tidev,{EV,TA})
-	   /\ witness(EV,CS,auth_ev_cs_req,Rev)
+		2. State=2 /\ RCV({IDta'.PKta'.Rta'.ATIDevcs'.Ac'.Ycs'}_SigEV.T11') =|> State':=3
+		/\ SND(H4(H4(DH(Ycs',Bevx).ATIDevcs'.Ac').DH(P,Bevx).Ycs'.T13).T13)
+		/\ secret(H4(DH(Ycs',Bevx).ATIDevcs'.Ac'),sec_sk,{EV,CS})
+		/\ witness(EV,CS,auth_ev_cs,H4(H4(DH(Ycs',Bevx).ATIDevcs'.Ac').DH(P,Bevx).Ycs'.T13))
 
-	2. State=1 /\ RCV({IDta'.PKta'.Rta'.ATIDevcs'.Ac'}_Sigev.TsCs') =|>
-	   State' := 2
-	   /\ request(EV,CS,auth_cs_ev_rta,Rta')
-	   /\ SND({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.TsEv)
-	   /\ witness(EV,CS,auth_ev_cs_rta,Rta')
+		3. State=3 /\ RCV(H4(H4(DH(Ycs',Bevx).ATIDevcs'.Ac').DH(P,Bevx).Ycs'.T15').T15') =|> State':=4
+		/\ request(EV,CS,auth_cs_ev,H4(H4(DH(Ycs',Bevx).ATIDevcs'.Ac').DH(P,Bevx).Ycs'.T15'))
 
 end role
 
 
-role role_CS(CS,EV,TA:agent,H2,H3,H4:hash_func,
-             Rcs,TIDcs,TsCs:text,
+role role_CS(CS,TA,EV:agent,
+             H1,H2,H3,H4,DH:hash_func,
+             P,TIDcs,Ccs,Ncs,T3,T7,T11,T15:text,
              PKcs:public_key,
-             Sigev,Sigcs:symmetric_key,
+             SigCS:symmetric_key,
              SND,RCV:channel(dy))
 played_by CS
 def=
 	local
 		State:nat,
-		TsTa,TsEv,Rev,TIDev,IDta,Rta,ATIDevcs,Ac:text,
-		PKev,PKta:public_key
+		Rcs,CSy,E1,IDta,Rta,ATIDevcs,Ac,Bev,SigEVta,T5,T9,T13:text,
+		PKta:public_key
 	init
 		State := 0
-
 	transition
+		1. State=0 /\ RCV(start) =|> State':=1
+		/\ SND(H1(SigCS.TIDcs.Ccs.Ncs.T3).T3)
+		/\ secret(SigCS,sec_cs_ta,{CS,TA})
+		/\ witness(CS,TA,auth_cs_ta,H1(SigCS.TIDcs.Ccs.Ncs.T3))
 
-	1. State=0 /\ RCV({H2(PKev'.Rev'.TIDev').Rev'.H3(H2(PKev'.Rev'.TIDev').Rev')}_Sigev.TsEv') =|>
-	   State' := 1
-	   /\ request(CS,EV,auth_ev_cs_req,Rev')
-	   /\ SND({H2(PKev'.Rev'.TIDev').Rev'.H3(H2(PKev'.Rev'.TIDev').Rev')}_Sigev.
-	          {H2(PKcs.Rcs.TIDcs).Rcs.H3(H2(PKcs.Rcs.TIDcs).Rcs)}_Sigcs.TsCs)
-	   /\ secret(Rcs,sec_rcs,{CS,TA})
-	   /\ secret(TIDcs,sec_tidcs,{CS,TA})
-	   /\ witness(CS,TA,auth_cs_ta_req,Rcs)
+		2. State=1 /\ RCV(E1'.T5') =|> State':=2
+		/\ SND(E1'.{H2(PKcs.Rcs.TIDcs).Rcs.H3(H2(PKcs.Rcs.TIDcs).Rcs.T7).DH(P,CSy)}_SigCS.T7)
 
-	2. State=1 /\ RCV({IDta'.PKta'.Rta'.ATIDevcs'.Ac'.Sigev}_Sigcs.TsTa') =|>
-	   State' := 2
-	   /\ request(CS,TA,auth_ta_cs_rta,Rta')
-	   /\ SND({IDta'.PKta'.Rta'.ATIDevcs'.Ac'}_Sigev.TsCs)
-	   /\ witness(CS,EV,auth_cs_ev_rta,Rta')
+		3. State=2 /\ RCV({IDta'.PKta'.Rta'.ATIDevcs'.Ac'.Bev'.SigEVta'}_SigCS.T9') =|> State':=3
+		/\ SND({IDta'.PKta'.Rta'.ATIDevcs'.Ac'.DH(P,CSy)}_SigEVta'.T11)
+		/\ secret(H4(DH(Bev',CSy).ATIDevcs'.Ac'),sec_sk,{EV,CS})
 
-	3. State=2 /\ RCV({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.TsEv') =|>
-	   State' := 3
-	   /\ request(CS,EV,auth_ev_cs_rta,Rta')
-	   /\ SND({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.
-	          {H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigcs.TsCs)
-	   /\ witness(CS,TA,auth_cs_ta_conf,ATIDevcs')
+		4. State=3 /\ RCV(H4(H4(DH(Bev',CSy).ATIDevcs'.Ac').Bev'.DH(P,CSy).T13').T13') =|> State':=4
+		/\ SND(H4(H4(DH(Bev',CSy).ATIDevcs'.Ac').Bev'.DH(P,CSy).T15).T15)
+		/\ request(CS,EV,auth_ev_cs,H4(H4(DH(Bev',CSy).ATIDevcs'.Ac').Bev'.DH(P,CSy).T13'))
+		/\ witness(CS,EV,auth_cs_ev,H4(H4(DH(Bev',CSy).ATIDevcs'.Ac').Bev'.DH(P,CSy).T15))
 
 end role
 
 
-role role_TA(TA,CS,EV:agent,H2,H3,H4:hash_func,
-             ATIDevcs,Ac,IDta,Rta,TsTa:text,
+role role_TA(TA,EV,CS:agent,
+             H1,H2,H3,H4,DH:hash_func,
+             P,TIDev,Cev,Nev,TIDcs,Ccs,Ncs:text,
+             PKev,PKcs:public_key,
+             SigEV,SigCS:symmetric_key,
+             IDta,Rta:text,
              PKta:public_key,
-             Sigev,Sigcs:symmetric_key,
              SND,RCV:channel(dy))
 played_by TA
 def=
 	local
 		State:nat,
-		TsCs,Rev,TIDev,Rcs,TIDcs:text,
-		PKev,PKcs:public_key
+		T1,T3,T5,T7,T9:text,
+		Rev,Rcs,Bev,Ycs,ATIDevcs,Ac:text
 	init
 		State := 0
-
 	transition
+		1. State=0 /\ RCV(H1(SigEV.TIDev.Cev.Nev.T1').T1') =|> State':=1
+		/\ request(TA,EV,auth_ev_ta,H1(SigEV.TIDev.Cev.Nev.T1'))
 
-	1. State=0 /\ RCV({H2(PKev'.Rev'.TIDev').Rev'.H3(H2(PKev'.Rev'.TIDev').Rev')}_Sigev.
-	                  {H2(PKcs'.Rcs'.TIDcs').Rcs'.H3(H2(PKcs'.Rcs'.TIDcs').Rcs')}_Sigcs.TsCs') =|>
-	   State' := 1
-	   /\ request(TA,CS,auth_cs_ta_req,Rcs')
-	   /\ SND({IDta.PKta.Rta.ATIDevcs.Ac.Sigev}_Sigcs.TsTa)
-	   /\ secret(IDta,sec_idta,{EV,CS,TA})
-	   /\ secret(Rta,sec_rta,{EV,CS,TA})
-	   /\ secret(ATIDevcs,sec_atidevcs,{EV,CS,TA})
-	   /\ secret(Ac,sec_ac,{EV,CS,TA})
-	   /\ witness(TA,CS,auth_ta_cs_rta,Rta)
+		2. State=1 /\ RCV(H1(SigCS.TIDcs.Ccs.Ncs.T3').T3') =|> State':=2
+		/\ request(TA,CS,auth_cs_ta,H1(SigCS.TIDcs.Ccs.Ncs.T3'))
 
-	2. State=1 /\ RCV({H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigev.
-	                  {H4(IDta'.PKta'.Rta'.ATIDevcs')}_Sigcs.TsCs') =|>
-	   State' := 2
-	   /\ request(TA,CS,auth_cs_ta_conf,ATIDevcs')
+		3. State=2 /\ RCV(
+		     {H2(PKev.Rev'.TIDev).Rev'.H3(H2(PKev.Rev'.TIDev).Rev'.T5').Bev'}_SigEV.
+		     {H2(PKcs.Rcs'.TIDcs).Rcs'.H3(H2(PKcs.Rcs'.TIDcs).Rcs'.T7').Ycs'}_SigCS.T7'
+		   ) =|> State':=3
+		/\ SND({IDta.PKta.Rta.ATIDevcs.Ac.Bev'.SigEV}_SigCS.T9)
+		/\ secret(IDta,sec_9,{EV,CS,TA})
+		/\ secret(Rta,sec_10,{EV,CS,TA})
+		/\ secret(ATIDevcs,sec_11,{EV,CS,TA})
+		/\ secret(Ac,sec_12,{EV,CS,TA})
 
 end role
 
 
-role session(EV,CS,TA:agent,H2,H3,H4:hash_func,
-             Rev,TIDev,TsEv,
-             Rcs,TIDcs,TsCs,
-             ATIDevcs,Ac,IDta,Rta,TsTa:text,
+role session(EV,CS,TA:agent,
+             H1,H2,H3,H4,DH:hash_func,
+             P,TIDev,Cev,Nev,T1,T5,T13:text,
+             TIDcs,Ccs,Ncs,T3,T7,T11,T15:text,
+             IDta,Rta:text,
              PKev,PKcs,PKta:public_key,
-             Sigev,Sigcs:symmetric_key)
+             SigEV,SigCS:symmetric_key)
 def=
 	local
 		SND1,RCV1,SND2,RCV2,SND3,RCV3:channel(dy)
-
 	composition
-		role_EV(EV,CS,TA,H2,H3,H4,
-		        Rev,TIDev,TsEv,
-		        PKev,Sigev,Sigcs,
-		        SND1,RCV1)
-
-	/\	role_CS(CS,EV,TA,H2,H3,H4,
-		        Rcs,TIDcs,TsCs,
-		        PKcs,Sigev,Sigcs,
-		        SND2,RCV2)
-
-	/\	role_TA(TA,CS,EV,H2,H3,H4,
-		        ATIDevcs,Ac,IDta,Rta,TsTa,
-		        PKta,Sigev,Sigcs,
-		        SND3,RCV3)
-
+		role_EV(EV,TA,CS,H1,H2,H3,H4,DH,P,
+		        TIDev,Cev,Nev,T1,T5,T13,
+		        PKev,SigEV,SND1,RCV1)
+		/\
+		role_CS(CS,TA,EV,H1,H2,H3,H4,DH,P,
+		        TIDcs,Ccs,Ncs,T3,T7,T11,T15,
+		        PKcs,SigCS,SND2,RCV2)
+		/\
+		role_TA(TA,EV,CS,H1,H2,H3,H4,DH,P,
+		        TIDev,Cev,Nev,TIDcs,Ccs,Ncs,
+		        PKev,PKcs,SigEV,SigCS,
+		        IDta,Rta,PKta,SND3,RCV3)
 end role
 
 
@@ -139,64 +131,43 @@ role environment()
 def=
 	const
 		ev,cs,ta:agent,
-		h2,h3,h4:hash_func,
+		h1,h2,h3,h4,dh:hash_func,
 
-		rev,tidev,tsev:text,
-		rcs,tidcs,tscs:text,
-		atidevcs,ac,idta,rta,tsta:text,
+		p,tidev,cev,nev,t1,t5,t13:text,
+		tidcs,ccs,ncs,t3,t7,t11,t15:text,
+		idta,rta:text,
 
 		pkev,pkcs,pkta:public_key,
 		sigev,sigcs:symmetric_key,
 
-		sec_rev,
-		sec_tidev,
-		sec_rcs,
-		sec_tidcs,
-		sec_idta,
-		sec_rta,
-		sec_atidevcs,
-		sec_ac:protocol_id,
+		sec_ev_ta,sec_cs_ta,sec_9,sec_10,sec_11,sec_12,sec_sk,
+		auth_ev_ta,auth_cs_ta,auth_ev_cs,auth_cs_ev:protocol_id
 
-		auth_ev_cs_req,
-		auth_cs_ta_req,
-		auth_ta_cs_rta,
-		auth_cs_ev_rta,
-		auth_ev_cs_rta,
-		auth_cs_ta_conf:protocol_id
-
-	intruder_knowledge = {
-		ev,cs,ta,
-		h2,h3,h4,
-		pkev,pkcs,pkta
-	}
+	intruder_knowledge = {ev,cs,ta,h1,h2,h3,h4,dh,p,pkev,pkcs,pkta}
 
 	composition
-		session(ev,cs,ta,h2,h3,h4,
-		        rev,tidev,tsev,
-		        rcs,tidcs,tscs,
-		        atidevcs,ac,idta,rta,tsta,
+		session(ev,cs,ta,h1,h2,h3,h4,dh,
+		        p,tidev,cev,nev,t1,t5,t13,
+		        tidcs,ccs,ncs,t3,t7,t11,t15,
+		        idta,rta,
 		        pkev,pkcs,pkta,
 		        sigev,sigcs)
-
 end role
 
 
 goal
-	secrecy_of sec_rev
-	secrecy_of sec_tidev
-	secrecy_of sec_rcs
-	secrecy_of sec_tidcs
-	secrecy_of sec_idta
-	secrecy_of sec_rta
-	secrecy_of sec_atidevcs
-	secrecy_of sec_ac
+	secrecy_of sec_ev_ta
+	secrecy_of sec_cs_ta
+	secrecy_of sec_9
+	secrecy_of sec_10
+	secrecy_of sec_11
+	secrecy_of sec_12
+	secrecy_of sec_sk
+	authentication_on auth_ev_ta
+	authentication_on auth_cs_ta
+	authentication_on auth_ev_cs
+	authentication_on auth_cs_ev
 
-	authentication_on auth_ev_cs_req
-	authentication_on auth_cs_ta_req
-	authentication_on auth_ta_cs_rta
-	authentication_on auth_cs_ev_rta
-	authentication_on auth_ev_cs_rta
-	authentication_on auth_cs_ta_conf
 end goal
 
 environment()
